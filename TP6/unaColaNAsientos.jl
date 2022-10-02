@@ -4,7 +4,7 @@ using Plotly
 
 const HV = Inf64
 
-inversaIA(x) = 10 * x
+inversaIA(x) = log(-x+1)/(-0.1364)
 inversaTA(x) = 60+(240-60)*x
 
 generarIA() = inversaIA(rand())
