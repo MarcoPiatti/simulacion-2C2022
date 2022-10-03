@@ -6,6 +6,8 @@ using SpecialFunctions
 # N Bancos individuales y M mesas
 # 15% de la gente que llega viene sola
 # 85% de la gente que llega viene en grupos
+# Normalmente una persona llega, pregunta si hay lugar, y si no hay espera.
+# (El hecho de preguntar si hay lugar hace que en el modelo ya se sepa que tipo de cupo espera la persona)
 
 # Criterio de arrepentimiento: si hay tanta gente/grupos en cola como bancos/mesas disponibles, o más
 # El criterio es anecdotico
@@ -28,7 +30,7 @@ contador = 0
 for (N, M) in [(4, 14), (6, 21), (8, 28)]
     for iteraciones in 1:10 # Cantidad de simulaciones para cada caso
         t = 0
-        tf = 1000000
+        tf = 10000000
 
         nsBanco = 0
         nsMesa = 0
