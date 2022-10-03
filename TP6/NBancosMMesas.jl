@@ -4,9 +4,16 @@ using Plotly
 using SpecialFunctions
 
 # N Bancos individuales y M mesas
+# 15% de la gente que llega viene sola
+# 85% de la gente que llega viene en grupos
+
+# Criterio de arrepentimiento: si hay tanta gente/grupos en cola como bancos/mesas disponibles, o más
+# El criterio es anecdotico
+# Considera que una persona en promedio esta dispuesta a esperar el mismo tiempo que va a pasar en el local
+# Es necesario para no tener valores absurdos de PEC en casos de poca atención
 
 const HV = Inf64
-const chanceMesa = 0.8
+const chanceMesa = 0.85
 
 inversaIA(x) = -log(1 - x) / 0.1364
 inversaTA(x) = exp(4.8975 + 0.42846 * sqrt(2) * erfinv(2 * x - 1))
@@ -21,7 +28,7 @@ contador = 0
 for (N, M) in [(4, 14), (6, 21), (8, 28)]
     for iteraciones in 1:10 # Cantidad de simulaciones para cada caso
         t = 0
-        tf = 100000
+        tf = 1000000
 
         nsBanco = 0
         nsMesa = 0
@@ -53,22 +60,26 @@ for (N, M) in [(4, 14), (6, 21), (8, 28)]
                 tpll = t + generarIA()
 
                 if rand() < chanceMesa
-                    nsMesa += 1
                     ntMesa += 1
-                    if nsMesa <= M
-                        s = findmax(tpsMesa)[2]
-                        tpsMesa[s] = t + generarTA()
-                    else
-                        ncMesa += 1
+                    if ncMesa < M
+                        nsMesa += 1
+                        if nsMesa <= M
+                            s = findmax(tpsMesa)[2]
+                            tpsMesa[s] = t + generarTA()
+                        else
+                            ncMesa += 1
+                        end
                     end
                 else
-                    nsBanco += 1
                     ntBanco += 1
-                    if nsBanco <= N
-                        s = findmax(tpsBanco)[2]
-                        tpsBanco[s] = t + generarTA()
-                    else
-                        ncBanco += 1
+                    if ncBanco < N
+                        nsBanco += 1
+                        if nsBanco <= N
+                            s = findmax(tpsBanco)[2]
+                            tpsBanco[s] = t + generarTA()
+                        else
+                            ncBanco += 1
+                        end
                     end
                 end
             elseif tpsMesa[i] == proximoEvento
