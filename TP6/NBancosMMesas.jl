@@ -1,14 +1,15 @@
 using CSV
 using DataFrames
 using Plotly
+using SpecialFunctions
 
 # N Bancos individuales y M mesas
 
 const HV = Inf64
-const chanceMesa = 0.9
+const chanceMesa = 0.8
 
-inversaIA(x) = log(-x+1)/(-0.1364)
-inversaTA(x) = 60+(240-60)*x
+inversaIA(x) = -log(1 - x) / 0.1364
+inversaTA(x) = exp(4.8975 + 0.42846 * sqrt(2) * erfinv(2 * x - 1))
 
 generarIA() = inversaIA(rand())
 generarTA() = inversaTA(rand())
@@ -17,7 +18,7 @@ resultados = DataFrame(N = Int64[], M = Int64[], PEC_Banco = Float64[], PEC_Mesa
 
 contador = 0
 
-for (N, M) in [(4, 14), (8, 33)]
+for (N, M) in [(4, 14), (6, 21), (8, 28)]
     for iteraciones in 1:10 # Cantidad de simulaciones para cada caso
         t = 0
         tf = 100000
