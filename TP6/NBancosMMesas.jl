@@ -23,12 +23,15 @@ inversaTA(x) = exp(4.8975 + 0.42846 * sqrt(2) * erfinv(2 * x - 1))
 generarIA() = inversaIA(rand())
 generarTA() = inversaTA(rand())
 
-resultados = DataFrame(N = Int64[], M = Int64[], PEC_Banco = Float64[], PEC_Mesa = Float64[])
+resultados = DataFrame(B = Int64[], M = Int64[], PEC_Banco = Float64[], PEC_Mesa = Float64[])
 
-contador = 0
+progreso = 0
+casosDeSimulacion = [(4, 14), (6, 21), (8, 28)]
+iteracionesPorCaso = 10
+totalSimulaciones = length(casosDeSimulacion) * iteracionesPorCaso
 
-for (N, M) in [(4, 14), (6, 21), (8, 28)]
-    for iteraciones in 1:10 # Cantidad de simulaciones para cada caso
+for (B, M) in casosDeSimulacion
+    for iteracion in 1:iteracionesPorCaso # Cantidad de simulaciones para cada caso
         t = 0
         tf = 10000000
 
@@ -39,7 +42,7 @@ for (N, M) in [(4, 14), (6, 21), (8, 28)]
         ntBanco = 0
         ntMesa = 0
         tpll = 0
-        tpsBanco = fill(HV, N)
+        tpsBanco = fill(HV, B)
         tpsMesa = fill(HV, M)
 
         ia = 0
@@ -74,9 +77,9 @@ for (N, M) in [(4, 14), (6, 21), (8, 28)]
                     end
                 else
                     ntBanco += 1
-                    if ncBanco < N
+                    if ncBanco < B
                         nsBanco += 1
-                        if nsBanco <= N
+                        if nsBanco <= B
                             s = findmax(tpsBanco)[2]
                             tpsBanco[s] = t + generarTA()
                         else
@@ -100,7 +103,7 @@ for (N, M) in [(4, 14), (6, 21), (8, 28)]
                 SECMesa += (tpsBanco[j] - t) * ncMesa
                 t = tpsBanco[j]
                 nsBanco -= 1
-                if nsBanco >= N
+                if nsBanco >= B
                     ncBanco -= 1
                     tpsBanco[j] = t + generarTA()
                 else
@@ -112,9 +115,9 @@ for (N, M) in [(4, 14), (6, 21), (8, 28)]
 
         PECBanco = SECBanco / ntBanco
         PECMesa = SECMesa / ntMesa
-        push!(resultados, (N, M, PECBanco, PECMesa))
-        global contador += 1
-        println(contador)
+        push!(resultados, (B, M, PECBanco, PECMesa))
+        global progreso += 1
+        println("Iteracion $progreso de $totalSimulaciones")
     end
 end
 
