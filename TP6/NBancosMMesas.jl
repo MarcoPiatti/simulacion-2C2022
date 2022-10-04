@@ -26,8 +26,8 @@ generarTA() = inversaTA(rand())
 resultados = DataFrame(B = Int64[], M = Int64[], PEC_Banco = Float64[], PEC_Mesa = Float64[], ARR = Float64[])
 
 progreso = 0
-casosDeSimulacion = [(4, 14), (6, 21), (8, 28)]
-iteracionesPorCaso = 10
+casosDeSimulacion = [(4, 14), (5,17), (5,19) ,(6, 21), (7,23), (8, 28)]
+iteracionesPorCaso = 1
 totalSimulaciones = length(casosDeSimulacion) * iteracionesPorCaso
 
 for (B, M) in casosDeSimulacion
@@ -68,9 +68,9 @@ for (B, M) in casosDeSimulacion
                 tpll = t + generarIA()
 
                 if rand() < chanceMesa
-                    ntMesa += 1
                     if ncMesa < M
                         nsMesa += 1
+                        ntMesa += 1
                         if nsMesa <= M
                             s = findmax(tpsMesa)[2]
                             tpsMesa[s] = t + generarTA()
@@ -79,11 +79,12 @@ for (B, M) in casosDeSimulacion
                         end
                     else
                         ARR+=1
+
                     end
                 else
-                    ntBanco += 1
                     if ncBanco < B
                         nsBanco += 1
+                        ntBanco += 1
                         if nsBanco <= B
                             s = findmax(tpsBanco)[2]
                             tpsBanco[s] = t + generarTA()
