@@ -23,7 +23,7 @@ inversaTA(x) = exp(4.8975 + 0.42846 * sqrt(2) * erfinv(2 * x - 1))
 generarIA() = inversaIA(rand())
 generarTA() = inversaTA(rand())
 
-resultados = DataFrame(B = Int64[], M = Int64[], PEC_Banco = Float64[], PEC_Mesa = Float64[])
+resultados = DataFrame(B = Int64[], M = Int64[], PEC_Banco = Float64[], PEC_Mesa = Float64[], ARR = Float64[])
 
 progreso = 0
 casosDeSimulacion = [(4, 14), (6, 21), (8, 28)]
@@ -53,6 +53,9 @@ for (B, M) in casosDeSimulacion
         PECBancos = 0
         PECMesas = 0
 
+        PPA = 0
+        ARR = 0
+
         while true
             i = findmin(tpsMesa)[2]
             j = findmin(tpsBanco)[2]
@@ -74,6 +77,8 @@ for (B, M) in casosDeSimulacion
                         else
                             ncMesa += 1
                         end
+                    else
+                        ARR+=1
                     end
                 else
                     ntBanco += 1
@@ -85,6 +90,8 @@ for (B, M) in casosDeSimulacion
                         else
                             ncBanco += 1
                         end
+                    else
+                        ARR+=1
                     end
                 end
             elseif tpsMesa[i] == proximoEvento
@@ -115,7 +122,9 @@ for (B, M) in casosDeSimulacion
 
         PECBanco = SECBanco / ntBanco
         PECMesa = SECMesa / ntMesa
-        push!(resultados, (B, M, PECBanco, PECMesa))
+        PPA = (ARR * 100) / (ntBanco + ntMesa)
+
+        push!(resultados, (B, M, PECBanco, PECMesa,PPA))
         global progreso += 1
         println("Iteracion $progreso de $totalSimulaciones")
     end
