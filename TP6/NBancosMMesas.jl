@@ -119,7 +119,7 @@ for (B, M) in casosDeSimulacion
                 bancosOciosos = count(x -> x == HV, tpsBanco)
                 STOB += (tpsMesa[i] - t) * bancosOciosos
                 mesasOciosas = count(x -> x == HV, tpsMesa)
-                STOM += (tpsMesa[j] - t) * mesasOciosas
+                STOM += (tpsMesa[i] - t) * mesasOciosas
 
                 t = tpsMesa[i]
                 nsMesa -= 1
@@ -152,8 +152,8 @@ for (B, M) in casosDeSimulacion
         PECBanco = SECBanco / ntBanco
         PECMesa = SECMesa / ntMesa
         PPA = (ARR * 100) / (ntBanco + ntMesa)
-        PPTOB = STOB / (t * B)
-        PPTOM = STOM / (t * M)
+        PPTOB = STOB * 100 / (t * B)
+        PPTOM = STOM * 100 / (t * M)
 
         push!(resultados, (B, M, PECBanco, PECMesa, PPA, PPTOB, PPTOM))
         global progreso += 1
