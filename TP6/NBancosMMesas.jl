@@ -35,7 +35,7 @@ resultados = DataFrame(
 
 progreso = 0
 casosDeSimulacion = [(4 + div(i, 3), 14 + i) for i in 0:14]
-iteracionesPorCaso = 1
+iteracionesPorCaso = 10
 totalSimulaciones = length(casosDeSimulacion) * iteracionesPorCaso
 
 for (B, M) in casosDeSimulacion
