@@ -152,8 +152,8 @@ for (B, M) in casosDeSimulacion
         PECBanco = SECBanco / ntBanco
         PECMesa = SECMesa / ntMesa
         PPA = (ARR * 100) / (ntBanco + ntMesa)
-        PPTOB = STOB / ((tf - t) * B)
-        PPTOM = STOM / ((tf - t) * M)
+        PPTOB = STOB / (t * B)
+        PPTOM = STOM / (t * M)
 
         push!(resultados, (B, M, PECBanco, PECMesa, PPA, PPTOB, PPTOM))
         global progreso += 1
