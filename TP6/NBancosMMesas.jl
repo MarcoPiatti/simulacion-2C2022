@@ -23,10 +23,18 @@ inversaTA(x) = exp(4.8975 + 0.42846 * sqrt(2) * erfinv(2 * x - 1))
 generarIA() = inversaIA(rand())
 generarTA() = inversaTA(rand())
 
-resultados = DataFrame(B = Int64[], M = Int64[], PEC_Banco = Float64[], PEC_Mesa = Float64[], ARR = Float64[])
+resultados = DataFrame(
+        B = Int64[], 
+        M = Int64[], 
+        PEC_Banco = Float64[], 
+        PEC_Mesa = Float64[], 
+        ARR = Float64[], 
+        PPTOB = Float64[],
+        PPTOM = Float64[]
+    )
 
 progreso = 0
-casosDeSimulacion = [(4, 14), (5,17), (5,19) ,(6, 21), (7,23), (8, 28)]
+casosDeSimulacion = [(4 + div(i, 3), 14 + i) for i in 0:14]
 iteracionesPorCaso = 1
 totalSimulaciones = length(casosDeSimulacion) * iteracionesPorCaso
 
@@ -56,6 +64,11 @@ for (B, M) in casosDeSimulacion
         PPA = 0
         ARR = 0
 
+        STOB = 0
+        STOM = 0
+        PPTOB = 0
+        PPTOB = 0
+
         while true
             i = findmin(tpsMesa)[2]
             j = findmin(tpsBanco)[2]
@@ -64,6 +77,11 @@ for (B, M) in casosDeSimulacion
             if tpll == proximoEvento
                 SECBanco += (tpll - t) * ncBanco
                 SECMesa += (tpll - t) * ncMesa
+                bancosOciosos = count(x -> x == HV, tpsBanco)
+                STOB += (tpll - t) * bancosOciosos
+                mesasOciosas = count(x -> x == HV, tpsMesa)
+                STOM += (tpll - t) * mesasOciosas
+
                 t = tpll
                 tpll = t + generarIA()
 
@@ -98,6 +116,11 @@ for (B, M) in casosDeSimulacion
             elseif tpsMesa[i] == proximoEvento
                 SECBanco += (tpsMesa[i] - t) * ncBanco
                 SECMesa += (tpsMesa[i] - t) * ncMesa
+                bancosOciosos = count(x -> x == HV, tpsBanco)
+                STOB += (tpsMesa[i] - t) * bancosOciosos
+                mesasOciosas = count(x -> x == HV, tpsMesa)
+                STOM += (tpsMesa[j] - t) * mesasOciosas
+
                 t = tpsMesa[i]
                 nsMesa -= 1
                 if nsMesa >= M
@@ -109,6 +132,11 @@ for (B, M) in casosDeSimulacion
             elseif tpsBanco[j] == proximoEvento
                 SECBanco += (tpsBanco[j] - t) * ncBanco
                 SECMesa += (tpsBanco[j] - t) * ncMesa
+                bancosOciosos = count(x -> x == HV, tpsBanco)
+                STOB += (tpsBanco[j] - t) * bancosOciosos
+                mesasOciosas = count(x -> x == HV, tpsMesa)
+                STOM += (tpsBanco[j] - t) * mesasOciosas
+
                 t = tpsBanco[j]
                 nsBanco -= 1
                 if nsBanco >= B
@@ -124,8 +152,10 @@ for (B, M) in casosDeSimulacion
         PECBanco = SECBanco / ntBanco
         PECMesa = SECMesa / ntMesa
         PPA = (ARR * 100) / (ntBanco + ntMesa)
+        PPTOB = STOB / ((tf - t) * B)
+        PPTOM = STOM / ((tf - t) * M)
 
-        push!(resultados, (B, M, PECBanco, PECMesa,PPA))
+        push!(resultados, (B, M, PECBanco, PECMesa, PPA, PPTOB, PPTOM))
         global progreso += 1
         println("Iteracion $progreso de $totalSimulaciones")
     end
